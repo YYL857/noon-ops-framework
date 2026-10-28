@@ -1,0 +1,19 @@
+{
+  "name": "noon-ops-framework",
+  "version": "0.1.0",
+  "description": "Reference dual-path sync kit for Noon sellers: Partner API Impex + portal CSV ingest",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "whoami": "tsx examples/whoami.ts",
+    "list-impex": "tsx examples/list-impex-categories.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
