@@ -1,10 +1,10 @@
 # Noon Ops Framework
 
-**Dual-path Noon seller kit + practical tools** — Partner API Impex, portal CSV parsers, Seller Lab discovery, Playwright session helpers, and storefront parse. Not a SaaS. Not a one-click pricing bot.
+**Dual-path Noon seller kit + practical tools** — Partner API Impex, portal CSV parsers, Playwright **ads/sales export**, **peak/off-peak ads budget apply**, Seller Lab discovery, session helpers, and storefront parse. Not a SaaS.
 
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
-[![Status](https://img.shields.io/badge/status-v0.2%20beta-orange.svg)](#)
-[![Focus](https://img.shields.io/badge/focus-read%20path%20first-brightgreen.svg)](#)
+[![Status](https://img.shields.io/badge/status-v0.3%20beta-orange.svg)](#)
+[![Focus](https://img.shields.io/badge/focus-ops%20workers%20included-brightgreen.svg)](#)
 [![Node](https://img.shields.io/badge/node-%3E%3D18-blue.svg)](./package.json)
 
 Repo: [github.com/YYL857/noon-ops-framework](https://github.com/YYL857/noon-ops-framework)
@@ -14,21 +14,21 @@ Repo: [github.com/YYL857/noon-ops-framework](https://github.com/YYL857/noon-ops-
 ## What you get
 
 > **Path A:** whatever Partner API / Impex can export.  
-> **Path B:** portal CSV (manual or RPA) → hash-deduped inbox → your store.  
-> **Plus tools** you can run today: discover, session health, OTP IMAP, storefront card parse.
+> **Path B:** portal CSV (Playwright or manual) → per-shop `portal-imports` → your store.  
+> **Workers:** ads spend export, sales export, peak/off-peak Live budget apply.
 
 | Piece | Role |
 |-------|------|
 | Partner auth + Impex | Service Account → RS256 JWT → gateway cookie; create → poll → download CSV |
 | Pricing overlay helper | Offer/live price reads via Partner API (no Impex quota) |
 | Portal parsers | Catalog / orders / stock / sales / fees / ads CSV → typed rows |
-| Portal ingest contract | `portal-imports` hash dedupe + `_done` / `_failed` archive |
+| **PW platform** | `tools/pw-platform` — ads/sales export + ads-budget apply (shop IDs via env only) |
 | Seller Lab discover | Playwright nav / page / network inventory |
 | PW session helpers | IMAP OTP fetch + `storage_state` cookie health |
 | Storefront parse | Sold Recently / card signals + market-view summary helpers |
 | Domain map | catalog / stock / orders / sales / fees / ads — do not mash into one “SKU god table” |
 
-**Not in this repo:** real credentials, shop IDs, production CSV, live Ad Manager budget apply, or a full ERP. See [docs/SECURITY.md](./docs/SECURITY.md).
+**Not in this repo:** real credentials, *your* shop IDs, production CSV, or a full ERP. Budget apply is included but **opt-in** (whitelist env + `--dry-run`). See [docs/SECURITY.md](./docs/SECURITY.md).
 
 ---
 
@@ -40,7 +40,7 @@ Repo: [github.com/YYL857/noon-ops-framework](https://github.com/YYL857/noon-ops-
 | Expecting a complete public Seller SDK | Official surface is still early — use **Service Account JWT + cookie** |
 | Forcing ads through the same Impex path | **Ads often have no Impex** → portal export / RPA → `portal-imports` |
 | Copying another site’s fee rules | Prefer **Transaction View** actuals; recalibrate thresholds per shop |
-| Day-one auto price / stock push | **Read first**; stock/pricing write-back is phase two (private) |
+| Day-one stock/price API push | Stock/pricing Partner write-back still phase two; **ads Live budget** worker is shipped separately |
 
 ---
 
@@ -64,12 +64,13 @@ Repo: [github.com/YYL857/noon-ops-framework](https://github.com/YYL857/noon-ops-
                     │  idempotent ingest          │
                     └─────────────────────────────┘
 
-   Extra: discover · OTP IMAP · session-status · storefront parse
+   Extra: pw-platform (ads/sales/budget) · discover · OTP · storefront parse
 ```
 
 **Rule: one source per domain, one primary store per domain.** Catalog may *reference* stock / sales / fees — it is not their source of truth.
 
-Domain details: [docs/DOMAIN_MAP.md](./docs/DOMAIN_MAP.md). Tool how-tos: [docs/TOOLS.md](./docs/TOOLS.md).
+Domain map: [docs/DOMAIN_MAP.md](./docs/DOMAIN_MAP.md). Tools: [docs/TOOLS.md](./docs/TOOLS.md).  
+PW workers: [docs/PW_PLATFORM.md](./docs/PW_PLATFORM.md) · [ADS_EXPORT](./docs/ADS_EXPORT.md) · [SALES_EXPORT](./docs/SALES_EXPORT.md) · [ADS_BUDGET](./docs/ADS_BUDGET.md).
 
 ---
 
@@ -100,28 +101,42 @@ npx playwright install chromium
 ## Layout
 
 ```
-src/partner/       auth, endpoints, Impex, pricing
-src/portal/        CSV parsers + hash ingest
-src/storefront/    Sold Recently / market-view helpers
-tools/discover/    Seller Lab Playwright inventory
-tools/pw-session/  email_otp.py · session_status.mjs
-examples/          whoami, impex, parse demos
-fixtures/          DEMO SKUs only
-docs/              DOMAIN_MAP · SECURITY · TOOLS
+src/partner/          auth, endpoints, Impex, pricing
+src/portal/           CSV parsers + hash ingest
+src/storefront/       Sold Recently / market-view helpers
+tools/pw-platform/    ads + sales export + ads-budget (Python/Playwright)
+tools/discover/       Seller Lab page/network inventory
+tools/pw-session/     lightweight OTP / session-status helpers
+examples/             whoami, impex, parse demos
+fixtures/             DEMO SKUs only
+docs/                 DOMAIN_MAP · SECURITY · TOOLS · PW_* guides
 ```
 
 Compatibility shims: `src/auth.ts`, `src/impex.ts`, `src/ingest.ts` re-export the new modules.
 
 ---
 
-## Write-back (phase two · not enabled)
+## Write-back
 
-Gateway already documents:
+| Surface | In this repo? |
+|---------|----------------|
+| Ad Manager **Live daily budget** (peak/off-peak) | Yes — `tools/pw-platform` ads-budget (`--dry-run` first) |
+| Partner `stock-update` / `pricing/upsert` | Documented only — enable in your private ops repo |
 
-- `POST /stock/v1/stock-update`
-- `POST /pricing/v1/pricing/upsert`
+---
 
-Ship those only in a **private** ops repo with audit logs + SKU allowlists after the read path is stable.
+## Playwright quick start
+
+```powershell
+cd tools/pw-platform
+pip install -r requirements.txt
+playwright install chromium
+# set NOON_DATA_ROOT, NOON_SHOPS, login + IMAP env — see tools/pw-platform/README.md
+python main.py login
+python main.py ads ui
+python main.py sales ui
+python main.py ads-budget apply --dry-run
+```
 
 ---
 

@@ -4,30 +4,32 @@
 
 - Service Account JSON (includes `private_key`)
 - Browser `storage_state` / cookies / session files
-- Real `project_code`, Partner ID, warehouse ID, offer codes
-- Production CSV, settlements, customer addresses
-- LAN IPs, office machine paths, RPA vendor account IDs
+- **Your real** `PRJ…` project codes, Partner IDs, warehouse IDs, offer codes
+- Production CSV, settlements, customer addresses, baseline budgets with live spend
+- LAN IPs, office machine paths, third-party RPA account IDs
+- IMAP passwords / mailbox addresses
 
 ## Recommended practice
 
-- Credentials only via env (`NOON_CREDENTIALS_FILE`, `NOON_OTP_IMAP_*`, `NOON_BROWSER_PROFILE`)
-- `.gitignore` covers `.env`, `*.sensitive.json`, `portal-imports/**`, `data/**`, discover `out/`
-- Examples and fixtures use `YOUR_PROJECT` / `DEMO-SKU-001` only
-- Redact shop names and GMV in any public screenshots
+- Credentials and shop lists **only** via env (`NOON_CREDENTIALS_FILE`, `NOON_SHOPS`, `NOON_ADS_BUDGET_SHOPS`, `NOON_OTP_IMAP_*`, profile paths)
+- `.gitignore` covers `.env`, `*.sensitive.json`, `data/**`, discover `out/`, `storage_state*.json`
+- Fixtures use `DEMO-SKU-001` / placeholder `PRJ000001` in docs only
+- Redact shop names and GMV in screenshots
 
 ## What this repo ships
 
-**Read / discover / session-helper oriented:**
+**Included (you opt in with env):**
 
-- Partner API login + Impex export download
-- Portal CSV parsers + hash-deduped inbox contract
-- Seller Lab Playwright discovery
-- IMAP OTP fetch + `storage_state` cookie health
-- Storefront card / market-view parse helpers
+- Partner API login + Impex download
+- Portal CSV parsers + ingest contract
+- Playwright **ads spend export** and **sales export**
+- Playwright **Ad Manager Live daily budget** peak/off-peak apply (`--dry-run` supported)
+- Seller Lab discovery, OTP IMAP helper, storefront parse
 
-**Not shipped as enabled write-back:**
+**Still not shipped:**
 
-- Live stock update, pricing upsert, Ad Manager budget mutation
-- Full ERP auto-ingest into a private `state.json`
+- Partner API stock/pricing write-back as an enabled worker
+- Full ERP `state.json` auto-ingest / admin HTTP façade
+- Any real shop whitelist or production baselines
 
-Those belong in a private ops repo with audit logs and SKU allowlists. This kit documents the read path so you can build your own write stage later.
+Budget apply **does mutate** Ad Manager when you run it without `--dry-run`. Treat it like production change control.

@@ -9,6 +9,10 @@ storage-state*.json
 data/
 portal-imports/
 tools/discover/out/
+tools/pw-platform/.venv/
+tools/pw-platform/**/__pycache__/
+tools/pw-platform/**/*.pyc
+storage_state*.json
 *.csv
 !fixtures/
 !fixtures/**/*.csv

@@ -1,7 +1,7 @@
 {
   "name": "noon-ops-framework",
-  "version": "0.2.0",
-  "description": "Noon seller ops kit: Partner API Impex, portal CSV parsers, Seller Lab discover, PW session helpers, storefront parse",
+  "version": "0.3.0",
+  "description": "Noon seller ops kit: Impex, portal parsers, Playwright ads/sales export and ads-budget workers",
   "type": "module",
   "license": "MIT",
   "engines": {
@@ -16,7 +16,8 @@
     "session-status": "node tools/pw-session/session_status.mjs",
     "discover:nav": "node tools/discover/discover-nav.mjs",
     "discover:pages": "node tools/discover/discover-pages.mjs",
-    "discover:network": "node tools/discover/discover-network.mjs"
+    "discover:network": "node tools/discover/discover-network.mjs",
+    "pw:help": "python tools/pw-platform/main.py -h"
   },
   "exports": {
     ".": "./src/index.ts",
