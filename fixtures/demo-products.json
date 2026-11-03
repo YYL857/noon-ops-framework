@@ -1,0 +1,30 @@
+{
+  "hits": [
+    {
+      "sku": "NDEMO001",
+      "name": "Demo Coffee Grinder Burr",
+      "url": "https://www.noon.com/saudi-en/demo-coffee-grinder-burr/NDEMO001/p/",
+      "sale_price": 179,
+      "brand": "DemoBrand",
+      "soldRecentlyText": "80+ Sold Recently",
+      "isBestSeller": true,
+      "cardTags": ["80+ Sold Recently"]
+    },
+    {
+      "sku": "NDEMO002",
+      "title": "Demo Vacuum Bags",
+      "product_url": "https://www.noon.com/saudi-en/demo-vacuum-bags/NDEMO002/p/",
+      "price": { "amount": 45 },
+      "sold_recently": "2.6K",
+      "is_ad": false
+    },
+    {
+      "offerCode": "NDEMO003",
+      "name": "Sponsored Demo Widget",
+      "slug": "sponsored-demo-widget/NDEMO003/p/",
+      "price": 29.9,
+      "isAd": true,
+      "tags": ["12 Sold Recently"]
+    }
+  ]
+}

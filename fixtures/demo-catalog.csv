@@ -1,0 +1,4 @@
+partner_sku,noon_title,noon_status,sku_child,price,active_price,currency,stock_fbn_net,updated_at
+DEMO-SKU-001,Demo Coffee Grinder,live,NDEMO001,199.00,179.00,SAR,12,2026-01-15T10:00:00.000Z
+DEMO-SKU-002,Demo Vacuum Bags 50pk,live,NDEMO002,45.00,,SAR,0,2026-01-15T10:00:00.000Z
+DEMO-SKU-003,Demo Inactive Item,notlive,NDEMO003,99.00,,SAR,3,2026-01-14T08:00:00.000Z

@@ -1,20 +1,33 @@
-# Security · 开源边界
+# Security · public boundary
 
-## 永远不要提交
+## Never commit
 
-- Service Account JSON（含 `private_key`）
-- 浏览器 `storage-state` / Cookie / 会话文件
-- 真实 `project_code`、Partner ID、Warehouse ID、Offer code
-- 生产 CSV、对账单、客户地址
-- 内网 IP、办公机器路径、影刀账号
+- Service Account JSON (includes `private_key`)
+- Browser `storage_state` / cookies / session files
+- Real `project_code`, Partner ID, warehouse ID, offer codes
+- Production CSV, settlements, customer addresses
+- LAN IPs, office machine paths, RPA vendor account IDs
 
-## 推荐做法
+## Recommended practice
 
-- 凭证路径只放环境变量，例如 `NOON_CREDENTIALS_FILE`
-- `.gitignore` 忽略 `.env`、`*.sensitive.json`、`portal-imports/**`、`data/**`
-- 示例里的 project / SKU 一律用 `YOUR_PROJECT` / `DEMO-SKU-001`
-- 对外截图打码店铺名与 GMV
+- Credentials only via env (`NOON_CREDENTIALS_FILE`, `NOON_OTP_IMAP_*`, `NOON_BROWSER_PROFILE`)
+- `.gitignore` covers `.env`, `*.sensitive.json`, `portal-imports/**`, `data/**`, discover `out/`
+- Examples and fixtures use `YOUR_PROJECT` / `DEMO-SKU-001` only
+- Redact shop names and GMV in any public screenshots
 
-## 本框架范围
+## What this repo ships
 
-只描述**读侧双通道**与最小认证样板。自动化点击 Seller Lab、广告改价、库存写回若要做，请放在私有仓库并单独审计。
+**Read / discover / session-helper oriented:**
+
+- Partner API login + Impex export download
+- Portal CSV parsers + hash-deduped inbox contract
+- Seller Lab Playwright discovery
+- IMAP OTP fetch + `storage_state` cookie health
+- Storefront card / market-view parse helpers
+
+**Not shipped as enabled write-back:**
+
+- Live stock update, pricing upsert, Ad Manager budget mutation
+- Full ERP auto-ingest into a private `state.json`
+
+Those belong in a private ops repo with audit logs and SKU allowlists. This kit documents the read path so you can build your own write stage later.

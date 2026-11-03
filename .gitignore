@@ -8,6 +8,9 @@ dist/
 storage-state*.json
 data/
 portal-imports/
+tools/discover/out/
 *.csv
+!fixtures/
+!fixtures/**/*.csv
 .DS_Store
 Thumbs.db

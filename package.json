@@ -1,7 +1,7 @@
 {
   "name": "noon-ops-framework",
-  "version": "0.1.0",
-  "description": "Reference dual-path sync kit for Noon sellers: Partner API Impex + portal CSV ingest",
+  "version": "0.2.0",
+  "description": "Noon seller ops kit: Partner API Impex, portal CSV parsers, Seller Lab discover, PW session helpers, storefront parse",
   "type": "module",
   "license": "MIT",
   "engines": {
@@ -9,11 +9,27 @@
   },
   "scripts": {
     "whoami": "tsx examples/whoami.ts",
-    "list-impex": "tsx examples/list-impex-categories.ts"
+    "list-impex": "tsx examples/list-impex-categories.ts",
+    "impex-export": "tsx examples/run-impex-export.ts",
+    "parse-csv": "tsx examples/parse-sample-csv.ts",
+    "parse-storefront": "tsx examples/parse-storefront.ts",
+    "session-status": "node tools/pw-session/session_status.mjs",
+    "discover:nav": "node tools/discover/discover-nav.mjs",
+    "discover:pages": "node tools/discover/discover-pages.mjs",
+    "discover:network": "node tools/discover/discover-network.mjs"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./partner": "./src/partner/index.ts",
+    "./portal": "./src/portal/index.ts",
+    "./storefront": "./src/storefront/index.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0"
+  },
+  "optionalDependencies": {
+    "playwright": "^1.49.0"
   }
 }
